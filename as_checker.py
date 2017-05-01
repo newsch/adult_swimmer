@@ -3,7 +3,8 @@
 Compares a cashed list of items to the current list and sends an alert with IFTTT if there are any changes.
 """
 from bs4 import BeautifulSoup
-from pickle import dump, load
+import os.path
+import pickle
 import requests
 import yaml
 import re
@@ -85,9 +86,44 @@ def get_items(page):
         page_items.append(Item(**item_attributes))
     return page_items
 
+def save_list(data, file_path='list.obj'):
+    with open(file_path, 'wb') as file:
+        pickle.dump(data, file)
+
+def read_list(file_path='list.obj'):
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+    return data
+
 
 # read webhook settings from config file
 webhook_config = get_config()['maker_webhook']
 # send_alert('test1', 'test2', 'test3', **webhook_config)
+# [print(item) for item in get_items(get_html())]
 
-[print(item) for item in get_items(get_html())]
+current_items = get_items(get_html())
+added_items = []
+removed_items = []
+
+if os.path.isfile('list.obj'):
+    print('Old list found')
+    old_items = read_list()
+    # check for new and updated items
+    for item in current_items:
+        # TODO: implement object comparison for updated items
+        if item not in old_items:
+            print('New item found')
+            added_items.append(item)
+            print(item)
+    # check for removed items
+    for item in old_items:
+        if item not in current_items:
+            print('Item removed')
+            removed_items.append(item)
+            print(item)
+    print('{} new item(s) found'.format(len(added_items)))
+    print('{} items removed'.format(len(removed_items)))
+    print('Saving current list')
+else:
+    print('No old list found, saving current list')
+save_list(current_items)
