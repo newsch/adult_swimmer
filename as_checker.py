@@ -8,6 +8,7 @@ import pickle
 import requests
 import yaml
 import re
+import logging
 import pdb
 
 
@@ -22,6 +23,7 @@ def send_alert(first, second, third, event_name, maker_key):
     contents['value2'] = second
     contents['value3'] = third
     requests.post("https://maker.ifttt.com/trigger/{}/with/key/{}".format(event_name, maker_key), data=contents)
+    logging.debug('alert sent with contents value1: {} value2:{} value3:{}'.format(first, second, third))
 
 def get_html():
     # TODO: check for bad result
@@ -99,6 +101,9 @@ def read_list(file_path='list.obj'):
     return data
 
 
+# logging
+logging.basicConfig(filename='as_checker.log', format='%(asctime)-15s %(levelname)s: %(message)s', level=logging.DEBUG)
+
 # read webhook settings from config file
 webhook_config = get_config()['maker_webhook']
 # send_alert('test1', 'test2', 'test3', **webhook_config)
@@ -109,33 +114,37 @@ added_items = []
 removed_items = []
 
 if os.path.isfile('list.obj'):
-    print('Old list found')
+    logging.info('Old list found')
     old_items = read_list()
     # check for new and updated items
     for item in current_items:
         if item not in old_items:
-            print('New item found')
+            logging.debug('New item found')
+            logging.debug(item)
             added_items.append(item)
             print(item)
         else:  # find old item and look for changes
             for old_item in old_items:
                 if item.title == old_item.title:  # if item already in list
                     if item.price != old_item.price:
-                        print('Price changed for item')
+                        logging.info('Price changed for item')
+                        logging.debug(item)
                     if item.sold_out != old_item.sold_out:
                         if item.sold_out:
-                            print('Item sold out!')
+                            logging.info('Item sold out!')
+                            logging.debug(item)
                         else:
-                            print('Item available again!')
+                            logging.info('Item available again!')
+                            logging.debug(item)
     # check for removed items
     for item in old_items:
         if item not in current_items:
-            print('Item removed')
+            logging.debug('Item removed')
+            logging.debug(item)
             removed_items.append(item)
-            print(item)
-    print('{} new item(s) found'.format(len(added_items)))
-    print('{} items removed'.format(len(removed_items)))
-    print('Saving current list')
+    logging.info('{} new item(s) found'.format(len(added_items)))
+    logging.info('{} items removed'.format(len(removed_items)))
+    logging.info('Saving current list')
 else:
-    print('No old list found, saving current list')
+    logging.info('No old list found, saving current list')
 save_list(current_items)
