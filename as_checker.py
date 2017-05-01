@@ -113,11 +113,20 @@ if os.path.isfile('list.obj'):
     old_items = read_list()
     # check for new and updated items
     for item in current_items:
-        # TODO: implement object comparison for updated items
         if item not in old_items:
             print('New item found')
             added_items.append(item)
             print(item)
+        else:  # find old item and look for changes
+            for old_item in old_items:
+                if item.title == old_item.title:  # if item already in list
+                    if item.price != old_item.price:
+                        print('Price changed for item')
+                    if item.sold_out != old_item.sold_out:
+                        if item.sold_out:
+                            print('Item sold out!')
+                        else:
+                            print('Item available again!')
     # check for removed items
     for item in old_items:
         if item not in current_items:
