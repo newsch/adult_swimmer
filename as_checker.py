@@ -39,6 +39,9 @@ class Item(object):
         text = '{title}: ${price:,.2f}, Sold Out={sold_out}\n{link}'
         return(text.format(**self.__dict__))
 
+    def __eq__(self, other):
+        return self.title == other.title
+
 def get_items(page):
     """Return a list of items from the page"""
     # get featured product
