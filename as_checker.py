@@ -17,7 +17,7 @@ def get_config(config_file_path='config.yaml'):
         config_data = yaml.load(config_file)
     return config_data
 
-def send_alert(first, second, third, event_name, maker_key):
+def send_ifttt_post(first, second, third, event_name, maker_key):
     contents = {}
     contents['value1'] = first
     contents['value2'] = second
@@ -106,7 +106,8 @@ logging.basicConfig(filename='as_checker.log', format='%(asctime)-15s %(levelnam
 
 # read webhook settings from config file
 webhook_config = get_config()['maker_webhook']
-# send_alert('test1', 'test2', 'test3', **webhook_config)
+send_alert = lambda a: send_ifttt_post(a, '', '', **webhook_config)
+# send_ifttt_post('test1', 'test2', 'test3', **webhook_config)
 # [print(item) for item in get_items(get_html())]
 
 current_items = get_items(get_html())
@@ -144,7 +145,14 @@ if os.path.isfile('list.obj'):
             removed_items.append(item)
     logging.info('{} new item(s) found'.format(len(added_items)))
     logging.info('{} items removed'.format(len(removed_items)))
+    # alerts
+    if len(added_items) > 0:
+        for item in added_items:
+            send_alert('New item: {}'.format(item.title))
+        if len(added_items) > 3:
+            send_alert('{} new item(s) found'.format(len(added_items)))
     logging.info('Saving current list')
 else:
     logging.info('No old list found, saving current list')
+    send_alert('Started watching, {} items currently available'.format(len(current_items)))
 save_list(current_items)
