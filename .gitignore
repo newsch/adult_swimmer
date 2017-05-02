@@ -1,4 +1,4 @@
 *.html
 config.yaml
 list.obj
-*.log
+log.txt

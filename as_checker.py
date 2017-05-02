@@ -101,11 +101,14 @@ def read_list(file_path='list.obj'):
     return data
 
 
+# directory setup
+dir = os.path.dirname(__file__) + os.path.sep
+
 # logging
-logging.basicConfig(filename='as_checker.log', format='%(asctime)-15s %(levelname)s: %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=dir+'log.txt', format='%(asctime)-15s %(levelname)s: %(message)s', level=logging.DEBUG)
 
 # read webhook settings from config file
-webhook_config = get_config()['maker_webhook']
+webhook_config = get_config(config_file_path=dir+'config.yaml')['maker_webhook']
 send_alert = lambda a: send_ifttt_post(a, '', '', **webhook_config)
 # send_ifttt_post('test1', 'test2', 'test3', **webhook_config)
 # [print(item) for item in get_items(get_html())]
@@ -114,9 +117,9 @@ current_items = get_items(get_html())
 added_items = []
 removed_items = []
 
-if os.path.isfile('list.obj'):
+if os.path.isfile(dir+'list.obj'):
     logging.info('Old list found')
-    old_items = read_list()
+    old_items = read_list(file_path=dir+'list.obj')
     # check for new and updated items
     for item in current_items:
         if item not in old_items:
@@ -155,4 +158,4 @@ if os.path.isfile('list.obj'):
 else:
     logging.info('No old list found, saving current list')
     send_alert('Started watching, {} items currently available'.format(len(current_items)))
-save_list(current_items)
+save_list(current_items, file_path=dir+'list.obj')
