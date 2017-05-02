@@ -1,4 +1,4 @@
-# As Seen on Adult Swim Notifications
+# adult_swimmer
 A Python script to check for updates to https://www.asseenonadultswim.com.
 
 ## Getting Started
@@ -8,7 +8,7 @@ A Python script to check for updates to https://www.asseenonadultswim.com.
     2. Make a copy of the [sample configuration file](sample_config.yaml) called _config.yaml_ and add your webhook info.
 3. Run _as_checker.py_ - output is saved to _log.txt_.
 4. Add it to your Cron file to run it periodically (if using a Unix-like system).
-    1. Edit your Cron file with `crontab -e`
+    1. Edit your Cron file with `crontab -e`.
     2. Add a line similar to `@daily /full/path/to/as_checker.py` (This one runs daily - more about Cron [here](https://en.wikipedia.org/wiki/Cron)).
     3. Make sure the script is executable with `chmod a+x as_checker.py`.
 
