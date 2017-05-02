@@ -1,5 +1,17 @@
 # As Seen on Adult Swim Notifications
-A Python script to check for updates to <https://www.asseenonadultswim.com>.
+A Python script to check for updates to https://www.asseenonadultswim.com.
+
+## Getting Started
+1. Make sure you have the [required libraries](requirements.txt) installed.
+2. Set up an IFTTT channel (used here) or something similar if you want push notifications.
+    1. Connect a [Maker webhook trigger](https://ifttt.com/maker_webhooks) with whatever you want (I used [push notifications]).
+    2. Make a copy of the [sample configuration file](sample_config.yaml) called _config.yaml_ and add your webhook info.
+3. Run _as_checker.py_ - output is saved to _log.txt_.
+4. Add it to your Cron file to run it periodically (if using a Unix-like system).
+    1. Edit your Cron file with `crontab -e`
+    2. Add a line similar to `@daily /full/path/to/as_checker.py` (This one runs daily - more about Cron [here](https://en.wikipedia.org/wiki/Cron)).
+    3. Make sure the script is executable with `chmod a+x as_checker.py`.
+
 
 ## Useful Resources
 Readings that helped me, roughly grouped by topic and arranged in the order I googled them
