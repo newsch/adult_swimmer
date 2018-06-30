@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """asseenonadultswim.com feed
-Compares a cashed list of items to the current list and sends an alert with IFTTT if there are any changes.
+Compares a cached list of items to the current list and sends an alert with IFTTT if there are any changes.
 """
 from bs4 import BeautifulSoup
 import os.path
